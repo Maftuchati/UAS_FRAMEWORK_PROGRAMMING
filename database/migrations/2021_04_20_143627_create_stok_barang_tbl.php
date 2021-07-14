@@ -18,6 +18,7 @@ class CreateStokBarangTbl extends Migration
             $table->string('katagori_barang');
             $table->string('nama_barang');
             $table->string('jml_stok');
+            $table->string('image');
             $table->timestamps();
         });
     }

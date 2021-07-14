@@ -20,7 +20,7 @@
         </div>
     @endif
   
-    <form action="{{ route('stok_barang.update',$stok_barang->id) }}" method="POST">
+    <form action="{{ route('stok_barang.update',$stok_barang->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
    
@@ -41,6 +41,14 @@
                 <div class="form-group">
                     <strong>jumlah Stok</strong>
                     <input type="number" name="jml_stok" value="{{ $stok_barang->jml_stok }}" class="form-control" placeholder="jumlah Stok">
+                </div>
+            </div>
+            <div class="col-xs-8 col-sm-8 col-md-8">
+                <div class="form-group">
+                    <label>Image</label>
+                    <input type="file" name="image" class="form-control" placeholder="image">
+                    <br>
+                    <img src="/image/{{ $stok_barang->image }}" width="300px">
                 </div>
             </div>
             <div class="col-xs-12 col-sm-12 col-md-12">

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Barang;
 use Illuminate\Http\Request;
+use PDF;
 
 class BarangController extends Controller
 {
@@ -42,9 +43,19 @@ class BarangController extends Controller
             'katagori_barang' => 'required',
             'nama_barang' => 'required',
             'jml_stok' => 'required',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
-    
-        Barang::create($request->all());
+
+        $input = $request->all();
+
+        if ($image = $request->file('image')) {
+            $destinationPath = 'image/';
+            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+            $image->move($destinationPath, $profileImage);
+            $input['image'] = "$profileImage";
+        }
+  
+        Barang::create($input);
      
         return redirect()->route('stok_barang.index')
                         ->with('success','Simpan Data Berhasil.');
@@ -86,8 +97,19 @@ class BarangController extends Controller
             'nama_barang' => 'required',
             'jml_stok' => 'required',
         ]);
-    
-        $stok_barang->update($request->all());
+
+        $input = $request->all();
+        
+        if ($image = $request->file('image')) {
+            $destinationPath = 'image/';
+            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+            $image->move($destinationPath, $profileImage);
+            $input['image'] = "$profileImage";
+        }else{
+            unset($input['image']);
+        }
+        
+        $stok_barang->update($input);
     
         return redirect()->route('stok_barang.index')
                         ->with('success','Update Data Berhasil');
@@ -105,5 +127,13 @@ class BarangController extends Controller
     
         return redirect()->route('stok_barang.index')
                         ->with('success','Hapus Data Berhasil');
+    }
+
+    public function exportpdf(){
+        $stok_barang = Barang::all();
+
+        view()->share('stok_barang', $stok_barang);
+        $pdf = PDF::loadview('stok_barang_pdf');
+        return $pdf->download('stok_barang.pdf');
     }
 }
